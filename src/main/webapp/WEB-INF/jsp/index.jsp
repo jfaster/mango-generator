@@ -2,19 +2,17 @@
 <html>
 
 <head>
-
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
 
-    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+    <script src="static/jquery/1.11.3/jquery.min.js"></script>
 
-    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <link rel="stylesheet" href="static/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="static/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+    <script src="static/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
-    <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-
-    <link rel="stylesheet" href="/static/remodal/remodal.css">
-    <link rel="stylesheet" href="/static/remodal/remodal-default-theme.css">
-    <script src="/static/remodal/remodal.js"></script>
+    <link rel="stylesheet" href="static/remodal/1.0.5/remodal.css">
+    <link rel="stylesheet" href="static/remodal/1.0.5/remodal-default-theme.css">
+    <script src="static/remodal/1.0.5/remodal.min.js"></script>
 
 </head>
 
