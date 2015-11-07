@@ -23,7 +23,7 @@
         <div class="row">
             <div class="col-lg-3"></div>
             <div class="col-lg-6">
-                <form id="form" action="/do" method="get">
+                <form id="form" action="do" method="get">
                     <div class="form-group">
                         <label class="col-sm-3 control-label">数据库表名</label>
                         <div class="col-sm-9">
@@ -141,7 +141,7 @@
     function save() {
         $.ajax({
             type:'get',
-            url: '/do',
+            url: 'do',
             data: $("#form").serialize(),
             success: function(data) {
                 if (data.status == 1) {
