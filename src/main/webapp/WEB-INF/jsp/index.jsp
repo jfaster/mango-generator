@@ -18,6 +18,8 @@
     <script src="static/rainbow/1.1.9/js/rainbow.min.js"></script>
     <script src="static/rainbow/1.1.9/js/language/generic.js"></script>
     <script src="static/rainbow/1.1.9/js/language/java.js"></script>
+
+    <script src="static/zeroclipboard/2.2.0/ZeroClipboard.min.js"></script>
 </head>
 
 
@@ -113,7 +115,12 @@
         <pre id="codeContent" style="text-align:left"></pre>
     </div>
     <br>
-    <button data-remodal-action="confirm" class="remodal-confirm">OK</button>
+    <button id="copy" data-clipboard-target="copyContent" class="remodal-cancel" value="复制">复制</button>
+    <button data-remodal-action="confirm" class="remodal-confirm">关闭</button>
+</div>
+
+<div style="display: none">
+    <textarea id="copyContent"></textarea>
 </div>
 
 <script>
@@ -149,6 +156,7 @@
             success: function(data) {
                 if (data.status == 1) {
                     $('#codeName').html(data.codeName);
+                    $('#copyContent').html(data.codeContent);
                     Rainbow.color(data.codeContent, 'java', function(highlighted) {
                         $('#codeContent').html(highlighted);
                         $('[data-remodal-id=modal]').remodal().open();
@@ -161,6 +169,7 @@
         });
     }
 
+    var clip = new ZeroClipboard(document.getElementById("copy"));
 </script>
 </body>
 </html>
