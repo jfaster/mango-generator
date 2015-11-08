@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
+import org.apache.commons.lang3.StringUtils;
 import org.jfaster.mango.generator.core.CodeGenerator;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +22,7 @@ public class GeneratorController {
         return "index";
     }
 
-    @RequestMapping(value = "/do", method = RequestMethod.GET)
+    @RequestMapping(value = "/do", method = RequestMethod.GET, produces="text/plain;charset=UTF-8")
     @ResponseBody
     public String generate(
             String tableName,
@@ -31,27 +32,82 @@ public class GeneratorController {
             String[] properties,
             String keyPropertyClassName) throws Exception {
 
-        try {
-            TypeName keyPropertyType = null;
-            if ("int".equals(keyPropertyClassName)) {
-                keyPropertyType = TypeName.INT;
-            } else if ("long".equals(keyPropertyClassName)) {
-                keyPropertyType = TypeName.LONG;
-            } else if ("String".equals(keyPropertyClassName))  {
-                keyPropertyType = ClassName.get(String.class);
+        if (StringUtils.isBlank(tableName)) {
+            return error("数据库表名不能为空");
+        }
+        if (StringUtils.isBlank(pojoName)) {
+            return error("pojo类全名不能为空");
+        }
+        if (StringUtils.isBlank(daoName)) {
+            return error("dao类全名不能为空");
+        }
+        if (StringUtils.isBlank(keyPropertyClassName)) {
+            return error("主键属性类名不能为空");
+        }
+        if (columns.length == 0) {
+            return error("数据库字段数量不能为0");
+        }
+        if (columns.length != properties.length) {
+            return error("数据库字段数量与类属性数量不匹配");
+        }
+        for (String column : columns) {
+            if (StringUtils.isBlank(column)) {
+                return error("数据库字段不能为空");
             }
+        }
+        for (String property : properties) {
+            if (StringUtils.isBlank(property)) {
+                return error("类属性不能为空");
+            }
+        }
 
-            ClassName pojoType = ClassName.bestGuess(pojoName);
-            ClassName daoType = ClassName.bestGuess(daoName);
+        ClassName pojoType;
+        try {
+            pojoType = ClassName.bestGuess(pojoName);
+        } catch (Exception e) {
+            return error("pojo类全名不合法");
+        }
+        ClassName daoType;
+        try {
+            daoType = ClassName.bestGuess(daoName);
+        } catch (Exception e) {
+            return error("dao类全名不合法");
+        }
 
+        TypeName keyPropertyType;
+        if ("int".equals(keyPropertyClassName)) {
+            keyPropertyType = TypeName.INT;
+        } else if ("long".equals(keyPropertyClassName)) {
+            keyPropertyType = TypeName.LONG;
+        } else if ("String".equals(keyPropertyClassName))  {
+            keyPropertyType = ClassName.get(String.class);
+        } else {
+            return error("主键属性类名不合法");
+        }
+
+        try {
             String codeContent = CodeGenerator.generate(tableName, Lists.newArrayList(columns),
                     pojoType, Lists.newArrayList(properties),
                     daoType, properties[0], keyPropertyType);
-
-            return JSON.toJSONString(Result.ok(daoType.simpleName() + ".java", codeContent));
+            return ok(daoType.simpleName() + ".java", codeContent);
         } catch (Exception e) {
-            return JSON.toJSONString(Result.error(e.getMessage()));
+            return error(e.getMessage());
         }
+    }
+
+    private static String ok(String codeName, String code) {
+        Result r = new Result();
+        r.setStatus(1);
+        r.setCodeName(codeName);
+        r.setCodeContent(code);
+        return JSON.toJSONString(r);
+    }
+
+    private static String error(String msg) {
+        Result r = new Result();
+        r.setStatus(-1);
+        r.setMsg(msg);
+        return JSON.toJSONString(r);
     }
 
     private static class Result {
@@ -60,21 +116,6 @@ public class GeneratorController {
         private String msg;
         private String codeName;
         private String codeContent;
-
-        public static Result ok(String codeName, String code) {
-            Result r = new Result();
-            r.setStatus(1);
-            r.setCodeName(codeName);
-            r.setCodeContent(code);
-            return r;
-        }
-
-        public static Result error(String msg) {
-            Result r = new Result();
-            r.setStatus(-1);
-            r.setMsg(msg);
-            return r;
-        }
 
         public int getStatus() {
             return status;

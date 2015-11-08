@@ -119,6 +119,12 @@
     <button data-remodal-action="confirm" class="remodal-confirm">关闭</button>
 </div>
 
+<div class="remodal" data-remodal-id="errorMsg" data-remodal-options="hashTracking: false, closeOnOutsideClick: false">
+    <button data-remodal-action="close" class="remodal-close"></button>
+    <h1 id="errorMsg"></h1>
+    <button data-remodal-action="confirm" class="remodal-confirm">确定</button>
+</div>
+
 <div style="display: none">
     <textarea id="copyContent"></textarea>
 </div>
@@ -182,7 +188,8 @@
                         $('[data-remodal-id=modal]').remodal().open();
                     });
                 } else {
-                    alert(data.msg);
+                    $('#errorMsg').html(data.msg);
+                    $('[data-remodal-id=errorMsg]').remodal().open();
                 }
             },
             dataType: 'json'
