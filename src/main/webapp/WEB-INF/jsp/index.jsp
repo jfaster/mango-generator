@@ -77,7 +77,7 @@
                             </div>
                             <label class="col-sm-1">
                                 <div class="controls">
-                                    <select name="keyPropertyClassName" class="input-xlarge">
+                                    <select name="keyPropertyClassName" class="input-xlarge" tabindex="-1">
                                         <option value="String">String</option>
                                         <option value="int">int</option>
                                         <option value="long">long</option>
@@ -138,7 +138,7 @@
                 '</div>' +
                 '</div>' +
                 '<label class="col-sm-1">' +
-                '<button type="button" onclick="delRow(this)" class="btn btn-danger btn-xs">删除</button>' +
+                '<button type="button" onclick="delRow(this)" class="btn btn-danger btn-xs" tabindex="-1">删除</button>' +
                 '</label>' +
                 '</div>';
         $("#mapping").append(div);
