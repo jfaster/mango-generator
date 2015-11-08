@@ -68,7 +68,7 @@
                             <div class="col-sm-10">
                                 <div class="row">
                                     <div class="col-sm-6">
-                                        <input name="columns" type="text" class="form-control">
+                                        <input onchange="autoProperty(this)" name="columns" type="text" class="form-control">
                                     </div>
                                     <div class="col-sm-6">
                                         <input name="properties" type="text" class="form-control">
@@ -130,7 +130,7 @@
                 '<div class="col-sm-10">' +
                 '<div class="row">' +
                 '<div class="col-sm-6">' +
-                '<input name="columns" type="text" class="form-control">' +
+                '<input onchange="autoProperty(this)" name="columns" type="text" class="form-control">' +
                 '</div>' +
                 '<div class="col-sm-6">' +
                 '<input name="properties"  type="text" class="form-control">' +
@@ -142,6 +142,26 @@
                 '</label>' +
                 '</div>';
         $("#mapping").append(div);
+    }
+
+    function autoProperty(obj) {
+        var pv = $($(obj).parent().parent().find("input")[1]);
+        var cv = $(obj).val().toLowerCase();
+        var r = "";
+        var u = false;
+        for(var i = 0; i < cv.length; i++) {
+            var c = cv.charAt(i)
+            if (c == '_') {
+                u = true;
+            } else {
+                if (u) {
+                    c = c.toUpperCase();
+                    u = false;
+                }
+                r = r + c;
+            }
+        }
+        pv.val(r);
     }
 
     function delRow(obj) {
