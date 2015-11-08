@@ -22,11 +22,9 @@ public class CodeGenerator {
     private static final String INDENT = "    ";
 
     public static String generate(String tableName, List<String> columns,
-                                  String pojoName, List<String> properties,
-                                  String daoName, String keyProperty, TypeName keyPropertyType) throws Exception {
+                                  ClassName pojoType, List<String> properties,
+                                  ClassName daoType, String keyProperty, TypeName keyPropertyType) throws Exception {
 
-        ClassName pojoType = ClassName.bestGuess(pojoName);
-        ClassName daoType = ClassName.bestGuess(daoName);
         String pojoParameter = pojoType.simpleName().substring(0, 1).toLowerCase()
                 + pojoType.simpleName().substring(1, pojoType.simpleName().length());
         String keyColumn = getKeyColumn(keyProperty, properties, columns);
@@ -187,10 +185,6 @@ public class CodeGenerator {
     }
 
     public static void main(String[] args) throws Exception {
-        List<String> fields = Lists.newArrayList("userId", "myUserName", "age");
-        List<String> columns = Lists.newArrayList("user_id", "user_name", "age");
-        System.out.println(CodeGenerator.generate("user", columns, "test2.User", fields, "test.UserDao", "userId", ClassName.INT));
-        System.out.println(ClassName.INT.isPrimitive());
     }
 
 }

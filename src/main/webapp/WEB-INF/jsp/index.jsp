@@ -14,6 +14,10 @@
     <link rel="stylesheet" href="static/remodal/1.0.5/remodal-default-theme.css">
     <script src="static/remodal/1.0.5/remodal.min.js"></script>
 
+    <link href="static/rainbow/1.1.9/themes/blackboard.css" rel="stylesheet" type="text/css">
+    <script src="static/rainbow/1.1.9/js/rainbow.min.js"></script>
+    <script src="static/rainbow/1.1.9/js/language/generic.js"></script>
+    <script src="static/rainbow/1.1.9/js/language/java.js"></script>
 </head>
 
 
@@ -102,13 +106,12 @@
     </div>
 </div>
 
-<div class="remodal" data-remodal-id="modal">
+<div class="remodal" data-remodal-id="modal" data-remodal-options="hashTracking: false, closeOnOutsideClick: false">
     <button data-remodal-action="close" class="remodal-close"></button>
-    <h1>Remodal</h1>
-    <p>
-        <pre id="code" style="text-align:left">
-        </pre>
-    </p>
+    <h1 id="codeName"></h1>
+    <div>
+        <pre id="codeContent" style="text-align:left"></pre>
+    </div>
     <br>
     <button data-remodal-action="confirm" class="remodal-confirm">OK</button>
 </div>
@@ -145,8 +148,11 @@
             data: $("#form").serialize(),
             success: function(data) {
                 if (data.status == 1) {
-                    $('#code').html(data.code);
-                    $('[data-remodal-id=modal]').remodal().open();
+                    $('#codeName').html(data.codeName);
+                    Rainbow.color(data.codeContent, 'java', function(highlighted) {
+                        $('#codeContent').html(highlighted);
+                        $('[data-remodal-id=modal]').remodal().open();
+                    });
                 } else {
                     alert(data.msg);
                 }

@@ -41,11 +41,14 @@ public class GeneratorController {
                 keyPropertyType = ClassName.get(String.class);
             }
 
-            String code = CodeGenerator.generate(tableName, Lists.newArrayList(columns),
-                    pojoName, Lists.newArrayList(properties),
-                    daoName, properties[0], keyPropertyType);
+            ClassName pojoType = ClassName.bestGuess(pojoName);
+            ClassName daoType = ClassName.bestGuess(daoName);
 
-            return JSON.toJSONString(Result.ok(code));
+            String codeContent = CodeGenerator.generate(tableName, Lists.newArrayList(columns),
+                    pojoType, Lists.newArrayList(properties),
+                    daoType, properties[0], keyPropertyType);
+
+            return JSON.toJSONString(Result.ok(daoType.simpleName() + ".java", codeContent));
         } catch (Exception e) {
             return JSON.toJSONString(Result.error(e.getMessage()));
         }
@@ -55,12 +58,14 @@ public class GeneratorController {
 
         private int status;
         private String msg;
-        private String code;
+        private String codeName;
+        private String codeContent;
 
-        public static Result ok(String code) {
+        public static Result ok(String codeName, String code) {
             Result r = new Result();
             r.setStatus(1);
-            r.setCode(code);
+            r.setCodeName(codeName);
+            r.setCodeContent(code);
             return r;
         }
 
@@ -87,12 +92,20 @@ public class GeneratorController {
             this.msg = msg;
         }
 
-        public String getCode() {
-            return code;
+        public String getCodeName() {
+            return codeName;
         }
 
-        public void setCode(String code) {
-            this.code = code;
+        public void setCodeName(String codeName) {
+            this.codeName = codeName;
+        }
+
+        public String getCodeContent() {
+            return codeContent;
+        }
+
+        public void setCodeContent(String codeContent) {
+            this.codeContent = codeContent;
         }
     }
 
