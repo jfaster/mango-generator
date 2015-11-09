@@ -78,10 +78,11 @@
                             <label class="col-sm-1">
                                 <div class="controls">
                                     <select name="keyPropertyClassName" class="input-xlarge" tabindex="-1">
-                                        <option value="String">String</option>
                                         <option value="int">int</option>
                                         <option value="long">long</option>
+                                        <option value="String">String</option>
                                     </select>
+                                    是否自增：<input type="checkbox" value="true" name="strAutoInc">
                                 </div>
                             </label>
                         </div>

@@ -30,7 +30,8 @@ public class GeneratorController {
             String daoName,
             String[] columns,
             String[] properties,
-            String keyPropertyClassName) throws Exception {
+            String keyPropertyClassName,
+            String strAutoInc) throws Exception {
 
         if (StringUtils.isBlank(tableName)) {
             return error("数据库表名不能为空");
@@ -85,10 +86,12 @@ public class GeneratorController {
             return error("主键属性类名不合法");
         }
 
+        boolean isKeyAutoInc = Boolean.valueOf(strAutoInc);
+
         try {
             String codeContent = CodeGenerator.generate(tableName, Lists.newArrayList(columns),
                     pojoType, Lists.newArrayList(properties),
-                    daoType, properties[0], keyPropertyType);
+                    daoType, properties[0], keyPropertyType, isKeyAutoInc);
             return ok(daoType.simpleName() + ".java", codeContent);
         } catch (Exception e) {
             return error(e.getMessage());

@@ -3,10 +3,7 @@ package org.jfaster.mango.generator.core;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.squareup.javapoet.*;
-import org.jfaster.mango.annotation.DB;
-import org.jfaster.mango.annotation.Result;
-import org.jfaster.mango.annotation.Results;
-import org.jfaster.mango.annotation.SQL;
+import org.jfaster.mango.annotation.*;
 import org.jfaster.mango.util.Strings;
 
 import javax.lang.model.element.Modifier;
@@ -23,7 +20,8 @@ public class CodeGenerator {
 
     public static String generate(String tableName, List<String> columns,
                                   ClassName pojoType, List<String> properties,
-                                  ClassName daoType, String keyProperty, TypeName keyPropertyType) throws Exception {
+                                  ClassName daoType, String keyProperty, TypeName keyPropertyType,
+                                  boolean isKeyAutoInc) throws Exception {
 
         String pojoParameter = pojoType.simpleName().substring(0, 1).toLowerCase()
                 + pojoType.simpleName().substring(1, pojoType.simpleName().length());
@@ -33,7 +31,7 @@ public class CodeGenerator {
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(buildDBAnnotationSpec(tableName))
                 .addField(buildStaticColumns(columns))
-                .addMethod(buildInsertSpec(pojoType, pojoParameter, properties))
+                .addMethod(buildInsertSpec(pojoType, pojoParameter, properties, isKeyAutoInc))
                 .addMethod(buildSelectSpec(pojoType, keyPropertyType, keyProperty, keyColumn))
                 .addMethod(buildUpdateSpec(pojoType, pojoParameter, properties, columns, keyProperty, keyColumn))
                 .addMethod(buildDeleteSpec(pojoType, keyPropertyType, keyProperty, keyColumn));
@@ -72,21 +70,33 @@ public class CodeGenerator {
                 .build();
     }
 
-    private static MethodSpec buildInsertSpec(ClassName pojoType, String pojoParameter, List<String> properties) {
+    private static MethodSpec buildInsertSpec(ClassName pojoType, String pojoParameter,
+                                              List<String> properties, boolean isKeyAutoInc) {
         List<String> colonProperties = Lists.newArrayList();
         for (String property : properties) {
             colonProperties.add(COLON + property);
         }
-        return MethodSpec.methodBuilder("add" + pojoType.simpleName())
-                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .addAnnotation(AnnotationSpec.builder(SQL.class)
-                        .addMember("value", "$S + $L + $S",
-                                "insert into #table(",
-                                COLUMNS,
-                                ") values(" + Joiner.on(", ").join(colonProperties) + ")")
-                        .build())
-                .addParameter(pojoType, pojoParameter)
-                .build();
+
+        MethodSpec.Builder builder = MethodSpec.methodBuilder("add" + pojoType.simpleName())
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT);
+
+        if (isKeyAutoInc) {
+            builder.addAnnotation(ReturnGeneratedId.class);
+        }
+
+        builder.addAnnotation(AnnotationSpec.builder(SQL.class)
+                .addMember("value", "$S + $L + $S",
+                        "insert into #table(",
+                        COLUMNS,
+                        ") values(" + Joiner.on(", ").join(colonProperties) + ")")
+                .build())
+                .addParameter(pojoType, pojoParameter);
+
+        if (isKeyAutoInc) {
+            builder.returns(int.class);
+        }
+
+        return builder.build();
     }
 
     private static MethodSpec buildSelectSpec(ClassName pojoType, TypeName keyPropertyType,
