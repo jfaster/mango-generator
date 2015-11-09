@@ -33,19 +33,19 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label">数据库表名</label>
                         <div class="col-sm-9">
-                            <input type="text" name="tableName" id="tableName" placeholder="填写数据库表名" class="form-control">
+                            <input type="text" name="tableName" id="tableName" placeholder="填写数据库表名，如：t_user" class="form-control">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-3 control-label">pojo类全名</label>
                         <div class="col-sm-9">
-                            <input type="text" name="pojoName" id="pojoName" placeholder="填写pojo类全名" class="form-control">
+                            <input type="text" name="pojoName" id="pojoName" placeholder="填写pojo类全名，如：test.User" class="form-control">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-3 control-label">dao类全名</label>
                         <div class="col-sm-9">
-                            <input type="text" name="daoName" id="daoName" placeholder="填写dao类全名" class="form-control">
+                            <input type="text" name="daoName" id="daoName" placeholder="填写dao类全名，如：test2.UserDao" class="form-control">
                         </div>
                     </div>
                     <div class="form-group" id="mapping">

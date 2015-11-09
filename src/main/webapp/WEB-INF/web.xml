@@ -65,5 +65,9 @@
         <servlet-name>default</servlet-name>
         <url-pattern>*.swf</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>*.map</url-pattern>
+    </servlet-mapping>
 
 </web-app>
