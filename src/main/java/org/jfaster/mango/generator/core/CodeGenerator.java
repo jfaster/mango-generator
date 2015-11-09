@@ -100,6 +100,7 @@ public class CodeGenerator {
                                 " from #table where " + keyColumn + " = :1")
                         .build())
                 .addParameter(keyPropertyType, keyProperty)
+                .returns(pojoType)
                 .build();
     }
 
