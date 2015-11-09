@@ -75,6 +75,7 @@ public class GeneratorController {
             return error("dao类全名不合法");
         }
 
+        boolean isKeyAutoInc = Boolean.valueOf(strAutoInc);
         TypeName keyPropertyType;
         if ("int".equals(keyPropertyClassName)) {
             keyPropertyType = TypeName.INT;
@@ -82,11 +83,12 @@ public class GeneratorController {
             keyPropertyType = TypeName.LONG;
         } else if ("String".equals(keyPropertyClassName))  {
             keyPropertyType = ClassName.get(String.class);
+            if (isKeyAutoInc) {
+                return error("String类型不能自增");
+            }
         } else {
             return error("主键属性类名不合法");
         }
-
-        boolean isKeyAutoInc = Boolean.valueOf(strAutoInc);
 
         try {
             String codeContent = CodeGenerator.generate(tableName, Lists.newArrayList(columns),

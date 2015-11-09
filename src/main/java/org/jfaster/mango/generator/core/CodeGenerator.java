@@ -31,7 +31,7 @@ public class CodeGenerator {
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(buildDBAnnotationSpec(tableName))
                 .addField(buildStaticColumns(columns))
-                .addMethod(buildInsertSpec(pojoType, pojoParameter, properties, isKeyAutoInc))
+                .addMethod(buildInsertSpec(pojoType, pojoParameter, properties, isKeyAutoInc, keyPropertyType))
                 .addMethod(buildSelectSpec(pojoType, keyPropertyType, keyProperty, keyColumn))
                 .addMethod(buildUpdateSpec(pojoType, pojoParameter, properties, columns, keyProperty, keyColumn))
                 .addMethod(buildDeleteSpec(pojoType, keyPropertyType, keyProperty, keyColumn));
@@ -71,7 +71,8 @@ public class CodeGenerator {
     }
 
     private static MethodSpec buildInsertSpec(ClassName pojoType, String pojoParameter,
-                                              List<String> properties, boolean isKeyAutoInc) {
+                                              List<String> properties, boolean isKeyAutoInc,
+                                              TypeName keyPropertyType) {
         List<String> colonProperties = Lists.newArrayList();
         for (String property : properties) {
             colonProperties.add(COLON + property);
@@ -93,7 +94,7 @@ public class CodeGenerator {
                 .addParameter(pojoType, pojoParameter);
 
         if (isKeyAutoInc) {
-            builder.returns(int.class);
+            builder.returns(keyPropertyType);
         }
 
         return builder.build();
