@@ -130,7 +130,7 @@ public class CodeGenerator {
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .addAnnotation(AnnotationSpec.builder(SQL.class)
                         .addMember("value", "$S",
-                                "update #table set " + Joiner.on(", ").join(items) + " where " + keyColumn + " = :" + keyColumn)
+                                "update #table set " + Joiner.on(", ").join(items) + " where " + keyColumn + " = :" + keyProperty)
                         .build())
                 .addParameter(pojoType, pojoParameter)
                 .returns(Boolean.TYPE)
