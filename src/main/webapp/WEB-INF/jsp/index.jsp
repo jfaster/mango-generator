@@ -5,7 +5,7 @@
     <meta http-equiv="content-type" content="text/html" charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <link rel="shortcut icon" href="">
-    <title></title>
+    <title>mango源码生成器</title>
     <meta name="keywords" content="">
     <meta name="description" content="">
 
@@ -96,7 +96,7 @@
                     <a href="javascript:;" id="bt_add" style="text-decoration:none">增加一行</a>
                 </div>
                 <div class="content_bt3">
-                    <a href="javascript:;" style="text-decoration:none">帮助</a>
+                    <a href="http://mango.jfaster.org" target="_blank" style="text-decoration:none">帮助</a>
                 </div>
             </div>
         </form>
