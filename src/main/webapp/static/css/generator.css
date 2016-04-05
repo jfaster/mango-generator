@@ -79,7 +79,7 @@ body {
 
 .content_bg {
     min-width: 700px;
-    background: url("/static/img/bg.png") no-repeat center top #fff;
+    background: url("/static/img/bg.jpg") no-repeat center top #fff;
     padding: 170px 0 80px;
 }
 
