@@ -89,7 +89,7 @@
             </div>
             <div class="content_box5 clearfix">
                 <div class="content_bt1">
-                    <label for="inp_sub" class="bt_sub">提交</label>
+                    <label for="inp_sub" class="bt_sub" style="cursor: pointer">提交</label>
                     <input type="button" value="" id="inp_sub" tabIndex="-1"/>
                 </div>
                 <div class="content_bt2">
