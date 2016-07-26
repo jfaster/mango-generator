@@ -15,6 +15,7 @@ import java.util.List;
 public class CodeGenerator {
 
     private static final String COLUMNS = "COLUMNS";
+    private static final String ALL_COLUMNS = "ALL_COLUMNS";
     private static final String COLON = ":";
     private static final String INDENT = "    ";
 
@@ -26,13 +27,20 @@ public class CodeGenerator {
         String pojoParameter = pojoType.simpleName().substring(0, 1).toLowerCase()
                 + pojoType.simpleName().substring(1, pojoType.simpleName().length());
         String keyColumn = getKeyColumn(keyProperty, properties, columns);
+        List<String> staticColumns = Lists.newArrayList(columns);
+        if (isKeyAutoInc) {
+            staticColumns.remove(keyProperty);
+        }
 
         TypeSpec.Builder typeBuilder = TypeSpec.interfaceBuilder(daoType.simpleName())
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(buildDBAnnotationSpec(tableName))
-                .addField(buildStaticColumns(columns))
-                .addMethod(buildInsertSpec(pojoType, pojoParameter, properties, isKeyAutoInc, keyPropertyType))
-                .addMethod(buildSelectSpec(pojoType, keyPropertyType, keyProperty, keyColumn))
+                .addField(buildStaticColumns(staticColumns));
+        if (isKeyAutoInc) {
+            typeBuilder.addField(buildAllStaticColumns(keyColumn));
+        }
+        typeBuilder.addMethod(buildInsertSpec(pojoType, pojoParameter, properties, isKeyAutoInc, keyPropertyType))
+                .addMethod(buildSelectSpec(pojoType, keyPropertyType, keyProperty, keyColumn, isKeyAutoInc))
                 .addMethod(buildUpdateSpec(pojoType, pojoParameter, properties, columns, keyProperty, keyColumn))
                 .addMethod(buildDeleteSpec(pojoType, keyPropertyType, keyProperty, keyColumn));
 
@@ -70,6 +78,13 @@ public class CodeGenerator {
                 .build();
     }
 
+    private static FieldSpec buildAllStaticColumns(String keyColumn) {
+        return FieldSpec.builder(String.class, ALL_COLUMNS)
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+                .initializer("$S + $L", keyColumn, " + " + COLUMNS)
+                .build();
+    }
+
     private static MethodSpec buildInsertSpec(ClassName pojoType, String pojoParameter,
                                               List<String> properties, boolean isKeyAutoInc,
                                               TypeName keyPropertyType) {
@@ -101,13 +116,13 @@ public class CodeGenerator {
     }
 
     private static MethodSpec buildSelectSpec(ClassName pojoType, TypeName keyPropertyType,
-                                              String keyProperty, String keyColumn) {
+                                              String keyProperty, String keyColumn, boolean isKeyAutoInc) {
         return MethodSpec.methodBuilder("get" + pojoType.simpleName())
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .addAnnotation(AnnotationSpec.builder(SQL.class)
                         .addMember("value", "$S + $L + $S",
                                 "select ",
-                                COLUMNS,
+                                isKeyAutoInc ? ALL_COLUMNS : COLUMNS,
                                 " from #table where " + keyColumn + " = :1")
                         .build())
                 .addParameter(keyPropertyType, keyProperty)
